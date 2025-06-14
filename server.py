@@ -36,3 +36,19 @@ def main():
             server_socket.sendto("FILE_NOT_FOUND".encode('utf-8'), client_address)
             print(f"File {filename} not found")
             continue
+          # 计算文件MD5校验和并发送
+        file_md5 = calculate_md5(filename)
+        server_socket.sendto(file_md5.encode('utf-8'), client_address)
+        
+        # 发送文件内容
+        with open(filename, 'rb') as file:
+            while True:
+                data = file.read(1024)
+                if not data:
+                    break
+                server_socket.sendto(data, client_address)
+        
+        print(f"File {filename} sent successfully to {client_address}")
+
+if __name__ == "__main__":
+    main()  
