@@ -25,3 +25,14 @@ def main():
     
     print(f"Server started on port {server_port}")
     print("Waiting for client requests...")
+    while True:
+        # 接收客户端请求
+        data, client_address = server_socket.recvfrom(1024)
+        filename = data.decode('utf-8')
+        print(f"Received request for file: {filename}")
+        
+        # 步骤1：文件准备 - 检查文件是否存在
+        if not os.path.isfile(filename):
+            server_socket.sendto("FILE_NOT_FOUND".encode('utf-8'), client_address)
+            print(f"File {filename} not found")
+            continue
