@@ -52,3 +52,24 @@ def main():
                 file_data.extend(data)
             except socket.timeout:
                 break
+             # 计算接收到数据的MD5校验和
+        actual_md5 = calculate_md5(file_data)
+        
+        # 步骤4：校验文件 - 验证文件完整性
+        if expected_md5 == actual_md5:
+            # 保存文件
+            with open(filename, 'wb') as file:
+                file.write(file_data)
+            print(f"File {filename} downloaded successfully")
+            
+            # 输出MD5校验和用于手动验证
+            print(f"File MD5: {actual_md5}")
+        else:
+            print(f"File {filename} corrupted during transmission")
+            print(f"Expected MD5: {expected_md5}")
+            print(f"Actual MD5: {actual_md5}")
+    
+    client_socket.close()
+
+if __name__ == "__main__":
+    main()  
